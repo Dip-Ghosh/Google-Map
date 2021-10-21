@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Waypoints in Directions</title>
+    <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link rel="stylesheet" type="text/css" href="./index.css"/>
+    <script src="./index.js"></script>
+</head>
+<body>
+<div id="container">
+    <div id="sidebar">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="button" id="addRowPickUp" class="btn btn-primary"> Add Pick Up</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" id="addRowDropOff" class="btn btn-info">Add Drop Off</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div>
+                      <b>Start:</b>
+                      <input type="text"  value=""  name="pick_up[]" id="start-1" class="form-control m-input" placeholder="Enter Pick Up">
+                      <br>
+                  <br>
+                </div>
+                <div class="input-group mb-2" id="newRowPickUp"></div>
+
+              <div>
+                <b>End:</b>
+
+                <input type="text" name="drop_off[]"  value=""  id="end-1" class="form-control n-input" placeholder="Enter Drop Off">
+                <br>
+            </div>
+            <div id="newRowDropOff"></div>
+            <br/>
+            <input type="submit" id="submit"/>
+        </div>
+        <div id="directions-panel"></div>
+        <div id="distance-panel"></div>
+    </div>
+</div>
+<div id="map"></div>
+</div>
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBnOZlg4OZD7vD5WTQeh3kgS3MQ-Vr6c70&callback=initMap&v=weekly &libraries=places" async></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    var ACoptions = {
+        componentRestrictions: {
+            country: "bd",
+        },
+    };
+    var i= 1;
+    var j= 1
+    // add row pick up
+    $("#addRowPickUp").click(function () {
+
+        i++;
+        var html = '';
+        html += '<input type="text" name="pick_up[]" value="" id="start-' + i + '" class="form-control m-input col-md-8" placeholder="Enter Pick Up" >';
+        html += '<button id="removeRowPickUp-'+ i+'" type="button" class="btn pick-remove btn-danger col-md-2">X</button>';
+        
+      if(i===2){
+        $(html).insertAfter("#start-" + (--i));
+      }else{
+        $(html).insertAfter("#removeRowPickUp-" + (--i));
+      }
+      i++;
+      autoCompletePick();
+
+    });
+
+    //auto complete pick field
+    function autoCompletePick() {
+        var acInputs = document.getElementsByClassName("m-input");
+        for (var i = 0; i < acInputs.length; i++) {
+            var autocomplete = new google.maps.places.Autocomplete(acInputs[i],ACoptions);
+            autocomplete.inputId = acInputs[i].id;
+        }
+    }
+
+    // remove row pick up
+    $(document).on('click', '.pick-remove', function (e) {
+
+      $(this).prev("input").remove();
+      $(this).remove();
+      $(this).prev("br").remove();
+    });
+
+
+    //auto complete frop
+    function autoCompleteDrop() {
+      var acInputs = document.getElementsByClassName("n-input");
+      for (var i = 0; i < acInputs.length; i++) {
+        var autocomplete = new google.maps.places.Autocomplete(acInputs[i],ACoptions);
+        autocomplete.inputId = acInputs[i].id;
+      }
+    }
+
+    // add row drop off
+    $("#addRowDropOff").click(function () {
+        j++;
+        var html = '';
+        html += '<input type="text" name="drop_off[]" id="end-' + j + '"  class="form-control n-input" placeholder="Enter Drop Off" >';
+        html += '<button id="removeRowDropOff-'+j+'" type="button" class="drop-off btn btn-danger">X</button>';
+
+        if(j===2){
+            $(html).insertAfter("#end-" + (--j));
+        }else{
+            $(html).insertAfter("#removeRowDropOff-" + (--j));
+        }
+        j++;
+      autoCompleteDrop();
+
+    });
+
+    // remove row drop off
+    $(document).on('click', '.drop-off', function () {
+        $(this).prev("input").remove();
+        $(this).remove();
+        $(this).prev("br").remove();
+
+    });
+</script>
+</body>
+</html>
